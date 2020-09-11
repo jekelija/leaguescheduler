@@ -1,0 +1,25 @@
+.hidden {
+    display: none;
+}
+
+input {
+    height: 40px;
+    box-sizing: border-box;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.btn {
+    
+    height:40px;
+    &.btn-primary {
+
+    }
+    &.btn-circle {
+        width: 40px;
+    }
+}
