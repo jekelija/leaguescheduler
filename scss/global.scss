@@ -2,6 +2,11 @@
     display: none;
 }
 
+body {
+    margin: 0px;
+    overflow: hidden;
+}
+
 input {
     height: 40px;
     box-sizing: border-box;

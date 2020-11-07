@@ -1,0 +1,56 @@
+@mixin media-query($breakpoint) {
+    @if $breakpoint == "xs" {
+      @media (max-width: 766px) {
+        @content;
+      }
+    } @else if $breakpoint == "sm" {
+      @media (min-width: 767px) {
+        @content;
+      }
+    } @else if $breakpoint == "sm-only" {
+      @media (min-width: 767px) and (max-width: 991px) {
+        @content;
+      }
+    } @else if $breakpoint == "md" {
+      @media (min-width: 992px) {
+        @content;
+      }
+    } @else if $breakpoint == "md-only" {
+      @media (min-width: 992px) and (max-width: 1199px) {
+        @content;
+      }
+    } @else if $breakpoint == "lg" {
+      @media (min-width: 1200px) {
+        @content;
+      }
+    } @else if $breakpoint == "xl" {
+      @media (min-width: 1400px) {
+        @content;
+      }
+    } @else if $breakpoint == "xxl" {
+      @media (min-width: 1600px) {
+        @content;
+      }
+    } @else if $breakpoint == "mobile-portrait" {
+      @media (max-width: 766px) and (orientation: portrait) {
+        @content;
+      }
+    } @else if $breakpoint == "tablet-portrait" {
+      @media (max-width: 1023px) and (orientation: portrait) {
+        @content;
+      }
+    } @else if $breakpoint == "mobile-landscape" {
+      @media (max-width: 991px) and (orientation: landscape) {
+        @content;
+      }
+    } @else if $breakpoint == "tablet-landscape" {
+      @media (min-width: 992px) and (orientation: landscape) {
+        @content;
+      }
+    } @else if $breakpoint == "all-portrait" {
+      @media (orientation: portrait) {
+        @content;
+      }
+    }
+  }
+  
