@@ -17,4 +17,10 @@ export class NightView {
             options.detailView.show(testDiv);
         });
     }
+
+    private buildDetailView(): void {
+        for(let l of this.night.leagues) {
+            
+        }
+    }
 }
