@@ -1,0 +1,1 @@
+//do as cards with a header that the card animates to when selecting. deatil is for editing current
