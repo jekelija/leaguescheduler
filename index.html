@@ -5,6 +5,29 @@
     <title>League Scheduler</title>
 </head>
 <body>
+    <div id='nav'>
+        <button id="login" class='i18n btn btn-primary' data-i18n-ns="login" data-i18n-key="login"></button>
+        <form id='loginForm' class="hidden">
+            <div class="container">
+                <label for="uname"><b class="i18n" data-i18n-ns="login" data-i18n-key="email"></b></label>
+                <input id='loginEmail' type="email" name="uname" required>
+            
+                <label for="psw"><b class="i18n" data-i18n-ns="login" data-i18n-key="password"></b></label>
+                <input id='loginPassword' type="password" name="psw" required>
+            
+                <button type="submit" class="i18n" data-i18n-ns="login" data-i18n-key="login">Login</button>
+                <label>
+                  <input id='loginRemember'  type="checkbox" checked="checked" name="remember">
+                  <span class="i18n"  data-i18n-ns="login" data-i18n-key="remember"></span>
+                </label>
+              </div>
+            
+              <div class="container" style="background-color:#f1f1f1">
+                <button type="button" class="cancelbtn i18n" data-i18n-ns="global" data-i18n-key="cancel">Cancel</button>
+                <span class="psw i18n" data-i18n-ns="login" data-i18n-key="forgot">Forgot password?</span>
+              </div>
+        </form>
+    </div>
     <div id='main'>
         <div id='main-header'>
             <div class='navigation-arrow'>

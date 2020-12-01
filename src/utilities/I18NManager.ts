@@ -35,7 +35,7 @@ export class I18NManager {
     }
 
     async init():Promise<void> {
-        const defaultNS = ['global', 'night', 'league', 'team', 'player'];
+        const defaultNS = ['global', 'login', 'night', 'league', 'team', 'player'];
         const loadPath = process.env.CACHE_BUSTER_PREFIX ? process.env.CACHE_BUSTER_PREFIX + '/locales/{{lng}}/{{ns}}.json' : '/locales/{{lng}}/{{ns}}.json';
         const defaultOptions:InitOptions = {
             ns: defaultNS,

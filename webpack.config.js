@@ -21,8 +21,7 @@ module.exports = {
         contentBase: './dist',
     },
     entry: {
-      index: './src/index.ts',
-      login: './src/login.ts'
+      index: './src/index.ts'
     },
     plugins: [
         new CleanWebpackPlugin(),
@@ -34,11 +33,6 @@ module.exports = {
             template: 'index.html',
             filename: "index.html",
             chunks:['index']
-        }),
-        new HtmlWebpackPlugin({
-            template: 'login.html',
-            filename: "login.html",
-            chunks:['login']
         }),
         new CopyWebpackPlugin({
             patterns: [{ 
