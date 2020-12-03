@@ -6,7 +6,7 @@ import { User } from "../model/User";
 
 export class UserController {
 
-    private currentUser:User;
+    public currentUser:User;
     private currentToken:string;
     private autoLoginPromise:Promise<boolean>;
 

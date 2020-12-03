@@ -28,8 +28,11 @@
               </div>
         </form>
     </div>
-    <div id='main'>
-        <div id='main-header'>
+    <div id='main' class='hidden'>
+        <h1>Welcome!</h1>
+    </div>
+    <div id='account' class='hidden'>
+        <div id='account-header'>
             <div class='navigation-arrow'>
                 <img alt='Previous'/>
             </div>
@@ -38,44 +41,10 @@
                 <img alt='Next'/>
             </div>
         </div>
-        <div id='main-content'>
-        </div>
-    </div>
-    <div id='nights' class='hidden'>
-        <div id='night-sunday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="sunday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
-        </div>
-        <div id='night-monday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="monday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
-        </div>
-        <div id='night-tuesday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="tuesday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
-        </div>
-        <div id='night-wednesday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="wednesday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
-        </div>
-        <div id='night-thursday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="thursday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
-        </div>
-        <div id='night-friday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="friday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
-        </div>
-        <div id='night-saturday' class='high-level-view'>
-            <h2 class='i18n' data-i18n-ns="night" data-i18n-key="saturday"></h2>
-            <div class='leagues-on-night'></div>
-            <button class='add-league btn btn-primary i18n' data-i18n-ns="night" data-i18n-key="editNight"></button>
+        <div id='account-content'>
+            <div id='no-sessions' class='hidden'>
+                <button id='create-session' class='btn btn-primary i18n' data-i18n-ns="session" data-i18n-key="createSession"></button>
+            </div>
         </div>
     </div>
     <div id='detail-container'>
