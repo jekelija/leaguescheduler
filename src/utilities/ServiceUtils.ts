@@ -1,6 +1,11 @@
 const url = 'http://localhost:3000/';
-
+let userToken:string;
 export class ServiceUtils {
+
+    static setToken(token:string): void {
+        userToken = token;
+    }
+
     static request(endpoint:string, type:'POST'|'DELETE'|'GET', data?:any, headers?:Map<string, string>): Promise<{response:any, request:XMLHttpRequest}> {
         const request = new XMLHttpRequest();
         request.open(type, url + endpoint);
@@ -11,6 +16,9 @@ export class ServiceUtils {
             for(let [key, value] of headers) {
                 request.setRequestHeader(key, value);
             }
+        }
+        if(userToken) {
+            request.setRequestHeader('x-auth-token', userToken);
         }
         return new Promise((resolve, reject) => {
             request.onload = function () {
