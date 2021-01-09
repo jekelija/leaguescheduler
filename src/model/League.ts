@@ -2,6 +2,6 @@ import { Team } from "./Team";
 
 export interface League {
     name:string;
-    difficulty:string;
+    level:string;
     teams: Team[];
 }

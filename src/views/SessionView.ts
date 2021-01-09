@@ -25,7 +25,11 @@ export class SessionView {
     }
 
     private async showSession(session:Session): Promise<void> {
-        Utilities.emptyDiv(document.getElementById('current-session'));
+        for(let n of this.nightViews) {
+            n.destroyHtml();
+            this.nightViews = [];
+        }
+        Utilities.emptyDiv(document.getElementById('current-session') as HTMLDivElement);
         document.getElementById('no-sessions').classList.add('hidden');
         const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
         headerInput.value = session.name;
@@ -33,6 +37,7 @@ export class SessionView {
         for(let night of session.nights) {
             const nightView = new NightView({
                 night,
+                session,
                 sessionParentElement: document.getElementById('current-session') as HTMLDivElement
             });
             nightView.buildHtml();

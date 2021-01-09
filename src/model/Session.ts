@@ -5,4 +5,5 @@ export interface Session {
     name: string;
     from: Date;
     to: Date;
+    _id:string;
 }
