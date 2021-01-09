@@ -11,7 +11,7 @@ export class SessionView {
 
     nightViews:NightView[] = [];
 
-    constructor(currentSession: Session, sessionIds:string[]) {
+    constructor(public currentSession: Session, sessionIds:string[]) {
         document.getElementById('account').classList.remove('hidden');
         if(!currentSession) {
             document.getElementById('no-sessions').classList.remove('hidden');
@@ -22,9 +22,22 @@ export class SessionView {
         document.getElementById('create-session').addEventListener('click', e=> {
             this.createSession(e.currentTarget as HTMLButtonElement);
         });
+
+        const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
+        headerInput.addEventListener('change', e=> {
+            const input = e.target as HTMLInputElement;
+            this.updateSessionName(input);
+        });
+    }
+
+    private async updateSessionName(input:HTMLInputElement): Promise<void> {
+        await Utilities.inputAutoUpdate(input, this.currentSession.name, async name=> {
+            await ServiceUtils.request('api/sessions/' + this.currentSession._id, 'POST', {name});
+        });
     }
 
     private async showSession(session:Session): Promise<void> {
+        this.currentSession = session;
         for(let n of this.nightViews) {
             n.destroyHtml();
             this.nightViews = [];
@@ -53,6 +66,8 @@ export class SessionView {
             const data = (await ServiceUtils.request('api/sessions/', 'POST')).response as Session;
 
             await this.showSession(data);
+            const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
+            headerInput.focus();
 
             console.log(data);
         } catch(e) {

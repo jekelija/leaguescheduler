@@ -44,7 +44,10 @@
             <div class='navigation-arrow'>
                 <img alt='Previous'/>
             </div>
-            <input class='session-header-text'/>
+            <div>
+                <input class='session-header-text' minlength="3"/>
+                <span class='input-status'></span>
+            </div>
             <div class='navigation-arrow'>
                 <img alt='Next'/>
             </div>
@@ -53,8 +56,9 @@
             <div id='no-sessions' class='hidden'>
                 <button id='create-session' class='btn btn-primary i18n' data-i18n-ns="session" data-i18n-key="createSession"></button>
             </div>
+            <div id='session-breadcrumbs'></div>
             <div id='current-session'>
-
+                
             </div>
         </div>
     </div>

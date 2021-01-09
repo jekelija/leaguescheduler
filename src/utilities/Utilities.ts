@@ -1,3 +1,6 @@
+import * as log from 'loglevel';
+import { I18NManager } from './I18NManager';
+
 export class Utilities {
     static emptyDiv(div:HTMLDivElement):void {
         if(div) {
@@ -81,5 +84,24 @@ export class Utilities {
                 resolve();
             }  
         });  
+    }
+
+    static async inputAutoUpdate(input:HTMLInputElement, currentValue:string, serviceUpdate:(newValue:string)=>Promise<void>):Promise<void> {
+        if(input.value != currentValue) {
+            input.disabled = true;
+            input.nextElementSibling.innerHTML = '';
+            try {
+                input.nextElementSibling.innerHTML = I18NManager.Instance().translate('global', 'updating');
+                await serviceUpdate(input.value);
+                input.nextElementSibling.innerHTML = '';
+            }
+            catch(e) {
+                input.nextElementSibling.innerHTML = I18NManager.Instance().translate('global', 'error');
+                input.value = currentValue;
+                log.error('Cannot update session name');
+                log.error(e);
+            }
+            input.disabled = false;
+        }
     }
 }

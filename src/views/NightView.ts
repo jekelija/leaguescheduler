@@ -5,6 +5,7 @@ import { Night } from "../model/Night";
 import { Session } from '../model/Session';
 import { League } from '../model/League';
 import { ServiceUtils } from '../utilities/ServiceUtils';
+import { Utilities } from '../utilities/Utilities';
 
 export interface NightViewOptions {
     night:Night;
@@ -26,6 +27,10 @@ export class NightView {
     buildHtml() {
         this.root = document.createElement('div');
         this.root.classList.add('session-night');
+        this.root.addEventListener('change', e=> {
+            const input = e.target as HTMLInputElement;
+            this.updateLeagueName(input);
+        });
 
         const rootTitle = document.createElement('h3');
         rootTitle.innerHTML = I18NManager.Instance().translate('night', this.options.night.name);
@@ -50,14 +55,28 @@ export class NightView {
         this.options.sessionParentElement.appendChild(this.root);
     }
 
-    private addLeague(l:League, leagueDiv?:HTMLDivElement):void {
+    private async updateLeagueName(input:HTMLInputElement): Promise<void> {
+        const league = this.options.night.leagues.find(x=>x._id==input.dataset.id);
+        if(league) {
+            await Utilities.inputAutoUpdate(input, league.name, async name=> {
+                await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + league._id, 'POST', {name});
+            });
+        }
+        
+    }
+
+    private addLeague(l:League, leagueDiv?:HTMLDivElement, autoFocus?:boolean):void {
         if(this.root) {
             if(!leagueDiv) {
                 leagueDiv = this.root.getElementsByClassName('leagues')[0] as HTMLDivElement;
             }
-            const league = document.createElement('p');
-            league.innerHTML = l.name;
+            const league = document.createElement('input');
+            league.dataset.id = l._id;
+            league.value = l.name;
             leagueDiv.appendChild(league);
+            if(autoFocus) {
+                league.select();
+            }
         }
     }
 
@@ -67,7 +86,7 @@ export class NightView {
         button.innerHTML = I18NManager.Instance().translate('global', 'creating');
         try {
             const l = (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name, 'POST')).response as League;
-            this.addLeague(l);
+            this.addLeague(l, undefined, true);
         } catch(e) {
             log.error(e);
             //TODO how should we handle errors in UI

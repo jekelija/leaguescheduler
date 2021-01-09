@@ -2,5 +2,7 @@
     "siteName" : "League Scheduler",
     "cancel" : "Cancel",
     "loading" : "Loading...",
-    "creating" : "Creating..."
+    "updating" : "Updating...",
+    "creating" : "Creating...",
+    "error" : "Error"
 }
