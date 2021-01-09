@@ -5,5 +5,5 @@ import { SessionView } from "./views/SessionView";
 export async function init(currentSession: Session, sessionIds:string[]) {
     //hide all views otehr than mine
     document.getElementById('main').classList.add('hidden');
-    const sessions = new SessionView(currentSession, sessionIds);
+    const sessionView = new SessionView(currentSession, sessionIds);
 }

@@ -1,5 +1,8 @@
 import { Night } from "./Night";
 
 export interface Session {
-    nights:Night;
+    nights:Night[];
+    name: string;
+    from: Date;
+    to: Date;
 }

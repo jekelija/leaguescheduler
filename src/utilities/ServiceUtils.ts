@@ -6,7 +6,7 @@ export class ServiceUtils {
         userToken = token;
     }
 
-    static request(endpoint:string, type:'POST'|'DELETE'|'GET', data?:any, headers?:Map<string, string>): Promise<{response:any, request:XMLHttpRequest}> {
+    static request(endpoint:string, type:'POST'|'DELETE'|'GET' = 'GET', data?:any, headers?:Map<string, string>): Promise<{response:any, request:XMLHttpRequest}> {
         const request = new XMLHttpRequest();
         request.open(type, url + endpoint);
         if(type == 'POST') {

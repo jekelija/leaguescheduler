@@ -1,3 +1,8 @@
+:root {   
+    --font-color:#666666;
+    --primary: navy;
+}
+
 .hidden {
     display: none;
 }
@@ -5,6 +10,7 @@
 body {
     margin: 0px;
     overflow: hidden;
+    color: var(--font-color);
 }
 
 input {
@@ -22,9 +28,45 @@ img {
     
     height:40px;
     &.btn-primary {
-
+        background: var(--primary);
+        color:white;
     }
     &.btn-circle {
         width: 40px;
     }
+}
+
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+        visibility: hidden;
+    }
+    100% {
+      opacity: 1;
+        visibility: visible;
+    }
+}
+  
+@keyframes fadeOut {
+    0% {
+      opacity: 1;
+        visibility: visible;
+    }
+    100% {
+      opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.fadeOut {
+    animation-name: fadeOut;
+    pointer-events: none;
+    animation-duration: .33s;
+    animation-fill-mode: both;
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+    animation-duration: .33s;
+    animation-fill-mode: both;
 }

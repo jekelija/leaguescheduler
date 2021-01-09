@@ -1,26 +1,38 @@
+import '../../scss/night.scss';
+import { I18NManager } from '../utilities/I18NManager';
 import { Night } from "../model/Night";
-import { DetailContainerView } from "./DetailContainerView";
 
 export interface NightViewOptions {
-    nightId:string;
-    detailView: DetailContainerView;
+    night:Night;
+    sessionParentElement:HTMLDivElement;
 }
 
 export class NightView {
-    private night:Night;
     private root:HTMLDivElement;
-    constructor(options: NightViewOptions) {
-        this.root = document.getElementById('night-' + options.nightId) as HTMLDivElement;
-        this.root.getElementsByClassName('add-league')[0].addEventListener('click', e=> {
-            const testDiv = document.createElement('div');
-            testDiv.innerHTML = 'ha';
-            options.detailView.show(testDiv);
-        });
+    constructor(private options: NightViewOptions) {
+        if(!options.night) {
+            throw 'NightView: must pass in a night';
+        }
+        if(!options.sessionParentElement) {
+            throw 'NightView: must pass in a sessionParentElement';
+        }
     }
 
-    private buildDetailView(): void {
-        for(let l of this.night.leagues) {
-            
+    buildHtml() {
+        this.root = document.createElement('div');
+        this.root.classList.add('session-night');
+
+        const rootTitle = document.createElement('h3');
+        rootTitle.innerHTML = I18NManager.Instance().translate('night', this.options.night.name);
+        this.root.appendChild(rootTitle);
+
+
+        this.options.sessionParentElement.appendChild(this.root);
+    }
+
+    destroyHtml() {
+        if(this.root) {
+            this.root.remove();
         }
     }
 }

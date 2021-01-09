@@ -1,0 +1,13 @@
+#nav {
+    display: flex;
+    align-items: center;
+
+    .nav-right {
+        right: 20px;
+        position: absolute;
+    }
+}
+
+form#loginForm {
+    width: 400px;
+}

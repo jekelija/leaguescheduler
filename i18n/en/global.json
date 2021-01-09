@@ -1,3 +1,6 @@
 {
-    "cancel" : "Cancel"
+    "siteName" : "League Scheduler",
+    "cancel" : "Cancel",
+    "loading" : "Loading...",
+    "creating" : "Creating..."
 }

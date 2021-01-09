@@ -34,6 +34,10 @@ export class UserController {
 
     private async autoLogin(token:string): Promise<boolean> {
         try {
+            if(!token) {
+                return false;
+            }
+            ServiceUtils.setToken(token);
             const data = await ServiceUtils.request('api/users/auth-token', 'GET');
             const user = data.response;
             this.setUser(token, user, false); //dont re-remember user, that way when it times out, forces re-login
@@ -44,6 +48,8 @@ export class UserController {
             log.error('Failed to auto login');
             log.error(e);
         }
+        ServiceUtils.setToken(null);
+        return false;
     }
 
     async login(email:string, password:string, rememberMe: boolean): Promise<void> {

@@ -6,7 +6,12 @@
 </head>
 <body>
     <div id='nav'>
-        <button id="login" class='i18n btn btn-primary' data-i18n-ns="login" data-i18n-key="login"></button>
+        <h1 class='i18n' data-i18n-ns="global" data-i18n-key="siteName"></h1>
+        <div id='loggedInButtons' class='nav-right hidden'> 
+            <button id="accountBtn" class='i18n btn btn-primary' data-i18n-ns="login" data-i18n-key="account"></button>
+            <button id="logout" class='i18n btn' data-i18n-ns="login" data-i18n-key="logout"></button>
+        </div>
+        <button id="login" class='nav-right i18n btn btn-primary' data-i18n-ns="login" data-i18n-key="login"></button>
         <form id='loginForm' class="hidden">
             <div class="container">
                 <label for="uname"><b class="i18n" data-i18n-ns="login" data-i18n-key="email"></b></label>
@@ -33,10 +38,13 @@
     </div>
     <div id='account' class='hidden'>
         <div id='account-header'>
+            
+        </div>
+        <div id='session-header'>
             <div class='navigation-arrow'>
                 <img alt='Previous'/>
             </div>
-            <span></span>
+            <input class='session-header-text'/>
             <div class='navigation-arrow'>
                 <img alt='Next'/>
             </div>
@@ -45,10 +53,10 @@
             <div id='no-sessions' class='hidden'>
                 <button id='create-session' class='btn btn-primary i18n' data-i18n-ns="session" data-i18n-key="createSession"></button>
             </div>
-        </div>
-    </div>
-    <div id='detail-container'>
+            <div id='current-session'>
 
+            </div>
+        </div>
     </div>
 </body>
 </html>

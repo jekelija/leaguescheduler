@@ -9,6 +9,7 @@
       "outDir": "dist",
       "incremental": true,
       "baseUrl": ".",
+      "suppressImplicitAnyIndexErrors" : true,
       "paths": {
           "*": [
               "node_modules/*"
