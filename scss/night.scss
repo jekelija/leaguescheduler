@@ -1,5 +1,33 @@
+@import './breakpoints.scss';
 .session-night {
-    border: 2px solid grey;
-    width: 400px;
-    margin-right: 20px;
+    width: 100%;
+
+    @include media-query(md) {
+        width: 50%;
+    }
+    @include media-query(lg) {
+        width: 33%;
+    }
+    @include media-query(xl) {
+        width: 20%;
+    }
+
+    .session-night-border {
+        border: 2px solid grey;
+        margin-right: 20px;
+        position: relative;
+        padding: 10px;
+
+        .leagues {
+    
+            .league {
+                display: flex;
+                align-items: center;
+                input {
+                    border: none;
+                    width:100%;
+                }
+            }
+        }
+    }
 }

@@ -7,6 +7,9 @@ import { League } from '../model/League';
 import { ServiceUtils } from '../utilities/ServiceUtils';
 import { Utilities } from '../utilities/Utilities';
 
+import SETTINGS_ICON from '../../assets/settings.svg';
+import TRASH_ICON from '../../assets/trash.svg';
+
 export interface NightViewOptions {
     night:Night;
     session:Session;
@@ -27,18 +30,33 @@ export class NightView {
     buildHtml() {
         this.root = document.createElement('div');
         this.root.classList.add('session-night');
+
+        const border = document.createElement('div');
+        border.classList.add('session-night-border');
         this.root.addEventListener('change', e=> {
             const input = e.target as HTMLInputElement;
             this.updateLeagueName(input);
         });
+        this.root.addEventListener('click', e=> {
+            const target = e.target as HTMLElement;
+            if(target.dataset.action == 'edit') {
+                this.editLeague(target.parentElement as HTMLDivElement);
+            }
+            else if(target.dataset.action == 'delete') {
+                this.deleteLeague(target.parentElement as HTMLDivElement);
+            }
+            else if(target.dataset.action == 'create') {
+                this.createLeague(e.target as HTMLButtonElement);
+            }
+        });
 
         const rootTitle = document.createElement('h3');
         rootTitle.innerHTML = I18NManager.Instance().translate('night', this.options.night.name);
-        this.root.appendChild(rootTitle);
+        border.appendChild(rootTitle);
 
         const nightLeagues = document.createElement('div');
         nightLeagues.classList.add('leagues');
-        this.root.appendChild(nightLeagues);
+        border.appendChild(nightLeagues);
 
         for(let l of this.options.night.leagues) {
             this.addLeague(l, nightLeagues);
@@ -46,17 +64,17 @@ export class NightView {
 
         const addLeague = document.createElement('button');
         addLeague.classList.add('btn');
+        addLeague.dataset.action = 'create';
         addLeague.innerHTML = I18NManager.Instance().translate('night', 'addLeague');
-        this.root.appendChild(addLeague);
-        addLeague.addEventListener('click', e=> {
-            this.createLeague(e.target as HTMLButtonElement);
-        });
+        border.appendChild(addLeague);
 
+        this.root.appendChild(border);
         this.options.sessionParentElement.appendChild(this.root);
     }
 
     private async updateLeagueName(input:HTMLInputElement): Promise<void> {
-        const league = this.options.night.leagues.find(x=>x._id==input.dataset.id);
+        const inputParent = input.parentElement;
+        const league = this.options.night.leagues.find(x=>x._id==inputParent.dataset.id);
         if(league) {
             await Utilities.inputAutoUpdate(input, league.name, async name=> {
                 await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + league._id, 'POST', {name});
@@ -65,15 +83,35 @@ export class NightView {
         
     }
 
-    private addLeague(l:League, leagueDiv?:HTMLDivElement, autoFocus?:boolean):void {
+    private addLeague(l:League, leagueParentDiv?:HTMLDivElement, autoFocus?:boolean):void {
         if(this.root) {
-            if(!leagueDiv) {
-                leagueDiv = this.root.getElementsByClassName('leagues')[0] as HTMLDivElement;
+            if(!leagueParentDiv) {
+                leagueParentDiv = this.root.getElementsByClassName('leagues')[0] as HTMLDivElement;
             }
+            const leagueDiv = document.createElement('div');
+            leagueDiv.classList.add('league');
+            leagueDiv.dataset.id = l._id;
             const league = document.createElement('input');
-            league.dataset.id = l._id;
             league.value = l.name;
+            const editImg = document.createElement('img');
+            editImg.dataset.action = 'edit';
+            editImg.classList.add('clickable-icon');
+            editImg.classList.add('inline-icon-right');
+            editImg.src = SETTINGS_ICON;
+            editImg.alt = I18NManager.Instance().translate('global', 'edit');
+            const deleteImg = document.createElement('img');
+            deleteImg.dataset.action = 'delete';
+            deleteImg.classList.add('clickable-icon');
+            deleteImg.classList.add('inline-icon-right');
+            deleteImg.src = TRASH_ICON;
+            deleteImg.alt = I18NManager.Instance().translate('global', 'delete');
+            deleteImg.style.right = '30px';
+
             leagueDiv.appendChild(league);
+            leagueDiv.appendChild(editImg);
+            leagueDiv.appendChild(deleteImg);
+
+            leagueParentDiv.appendChild(leagueDiv);
             if(autoFocus) {
                 league.select();
             }
@@ -93,6 +131,22 @@ export class NightView {
         }
         button.innerHTML = oldHtml;
         button.disabled = false;
+    }
+
+    private async editLeague(div:HTMLDivElement): Promise<void> {
+        //TODO
+    }
+
+    private async deleteLeague(div:HTMLDivElement): Promise<void> {
+        //TODO disable the night?
+        try {
+            const leagueId = div.dataset.id;
+            (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + leagueId, 'DELETE')).response;
+            div.remove();
+        } catch(e) {
+            log.error(e);
+            //TODO how should we handle errors in UI
+        }
     }
 
     destroyHtml() {

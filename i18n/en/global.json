@@ -4,5 +4,7 @@
     "loading" : "Loading...",
     "updating" : "Updating...",
     "creating" : "Creating...",
-    "error" : "Error"
+    "error" : "Error",
+    "edit": "Edit",
+    "delete" : "Delete"
 }

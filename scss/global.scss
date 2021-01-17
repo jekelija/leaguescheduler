@@ -1,3 +1,5 @@
+@import './breakpoints.scss';
+
 :root {   
     --font-color:#666666;
     --primary: navy;
@@ -69,4 +71,19 @@ img {
     animation-name: fadeIn;
     animation-duration: .33s;
     animation-fill-mode: both;
+}
+
+.clickable-icon {
+    cursor: pointer;
+    opacity: .7;
+    transition: all .3s ease;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.inline-icon-right {
+    position: absolute;
+    right: 0px;
 }
