@@ -51,6 +51,27 @@ export class SessionView {
         });
     }
 
+    private updateBreadcrumb(): void {
+        const breadcrumbs = document.getElementById('session-breadcrumbs') as HTMLDivElement;
+        if(this.currentSession) {
+            let sessionBreadcrumb = breadcrumbs.getElementsByClassName('session-breadcrumb')[0];
+            if(!sessionBreadcrumb) {
+                sessionBreadcrumb = document.createElement('span');
+                sessionBreadcrumb.classList.add('session-breadcrumb', 'breadcrumb');
+                breadcrumbs.appendChild(sessionBreadcrumb);
+            }
+            const dateFormat = new Intl.DateTimeFormat([I18NManager.Instance().getCurrentLanguage(), 'en']);
+            const fromDate = new Date(this.currentSession.from);
+            const toDate = new Date(this.currentSession.to);
+            sessionBreadcrumb.innerHTML = this.currentSession.name + ': ' + dateFormat.format(fromDate) + ' - ' + dateFormat.format(toDate);
+        }
+        else {
+            Utilities.emptyDiv(breadcrumbs);
+        }
+        
+        
+    }
+
     private async deleteSession(button:HTMLButtonElement): Promise<void> {
         button.disabled = true;
         const oldHtml = button.innerHTML;
@@ -129,6 +150,7 @@ export class SessionView {
         }
         Utilities.emptyDiv(document.getElementById('current-session') as HTMLDivElement);
         document.getElementById('no-sessions').classList.add('hidden');
+        this.updateBreadcrumb();
         const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
         headerInput.value = session.name;
 

@@ -3,7 +3,7 @@ import { Night } from "./Night";
 export interface Session {
     nights:Night[];
     name: string;
-    from: Date;
-    to: Date;
+    from: string;
+    to: string;
     readonly _id:string;
 }
