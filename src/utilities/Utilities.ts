@@ -104,4 +104,15 @@ export class Utilities {
             input.disabled = false;
         }
     }
+
+    static createLoadingSpinner(): HTMLDivElement {
+        // <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        const div = document.createElement('div');
+        div.classList.add('loading-spinner');
+        for(let i = 0; i < 4; ++i) {
+            const d = document.createElement('div');
+            div.appendChild(d);
+        }
+        return div;
+    }
 }

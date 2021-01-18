@@ -105,7 +105,7 @@ export class NightView {
             deleteImg.classList.add('inline-icon-right');
             deleteImg.src = TRASH_ICON;
             deleteImg.alt = I18NManager.Instance().translate('global', 'delete');
-            deleteImg.style.right = '30px';
+            deleteImg.style.right = '40px';
 
             leagueDiv.appendChild(league);
             leagueDiv.appendChild(editImg);

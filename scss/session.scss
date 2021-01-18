@@ -1,5 +1,16 @@
 #current-session {
     display: flex;
     flex-wrap: wrap;
-    /**TODO nights as grid*/
+}
+
+div#session-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: center;
+    margin: 20px 0px;
+
+    .session-header-center {
+        display: flex;
+    }
 }

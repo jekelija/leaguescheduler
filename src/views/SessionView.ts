@@ -19,8 +19,24 @@ export class SessionView {
         else {
             this.showSession(currentSession);
         }
+
+        document.getElementById('session-header').addEventListener('click', e=> {
+            const btn = (e.target as HTMLElement).closest('.btn') as HTMLButtonElement;
+            if(btn && btn.dataset.action) {
+                if(btn.dataset.action == 'create') {
+                    this.createSession(btn, true);
+                }
+                else if(btn.dataset.action == 'previous') {
+                    
+                }
+                else if(btn.dataset.action == 'next') {
+                    
+                }
+            }
+        });
+
         document.getElementById('create-session').addEventListener('click', e=> {
-            this.createSession(e.currentTarget as HTMLButtonElement);
+            this.createSession(e.currentTarget as HTMLButtonElement, false);
         });
 
         const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
@@ -58,10 +74,28 @@ export class SessionView {
         }
     }
 
-    private async createSession(button:HTMLButtonElement): Promise<void> {
+    /**
+     * Promisifies a timeout
+     * @param {number} ms - milliseconds to wait
+     */
+    async wait(ms: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, ms);
+        });
+    }
+
+    private async createSession(button:HTMLButtonElement, useLoadingSpinner:boolean): Promise<void> {
         button.disabled = true;
         const oldHtml = button.innerHTML;
-        button.innerHTML = I18NManager.Instance().translate('global', 'creating');
+        let loader:HTMLDivElement;
+        if(!useLoadingSpinner) {
+            button.innerHTML = I18NManager.Instance().translate('global', 'creating');
+        }
+        else {
+            button.innerHTML = '';
+            loader = Utilities.createLoadingSpinner();
+            button.appendChild(loader);
+        }
         try {
             const data = (await ServiceUtils.request('api/sessions/', 'POST')).response as Session;
 
@@ -74,7 +108,14 @@ export class SessionView {
             log.error(e);
             //TODO how should we handle errors in UI
         }
+        if(!useLoadingSpinner) {
+            button.innerHTML = I18NManager.Instance().translate('global', 'creating');
+        }
+        else {
+            loader.remove();
+        }
         button.innerHTML = oldHtml;
+
         button.disabled = false;
     }
 }
