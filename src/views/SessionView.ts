@@ -10,9 +10,14 @@ import { Utilities } from '../utilities/Utilities';
 export class SessionView {
 
     nightViews:NightView[] = [];
+    currentSessionEl: HTMLDivElement;
+
+    private static SLIDER_SPEED = .7;
 
     constructor(public currentSession: Session, public sessionIds:string[]) {
         document.getElementById('account').classList.remove('hidden');
+        document.documentElement.style.setProperty('--slider-animation-speed', SessionView.SLIDER_SPEED + "s");
+        this.currentSessionEl = document.getElementsByClassName('session-view')[0] as HTMLDivElement;
         if(!currentSession) {
             document.getElementById('no-sessions').classList.remove('hidden');
         }
@@ -123,8 +128,19 @@ export class SessionView {
             if(newIndex >= 0 && newIndex < this.sessionIds.length) {
                 const newSessionId = this.sessionIds[newIndex];
                 try {
-                    const newSession = (await ServiceUtils.request('api/sessions/' + newSessionId)).response as Session;    
-                    this.showSession(newSession);
+                    const newSession = (await ServiceUtils.request('api/sessions/' + newSessionId)).response as Session;   
+                    const newDiv = document.createElement('div');
+                    newDiv.classList.add('session-view'); 
+                    newDiv.classList.add('content-slider');
+                    if(moveIndex < 0) {
+                        newDiv.classList.add('content-slide-left');
+                    }
+                    else {
+                        newDiv.classList.add('content-slide-right');
+                    }
+                    document.getElementById('content-sliding-area').appendChild(newDiv);
+                    newDiv.offsetHeight; //force a repaint
+                    this.showSession(newSession, newDiv);
                 } catch(e) {
                     log.error('Cannot find session ' + newSessionId);
                     log.error(e);
@@ -142,13 +158,18 @@ export class SessionView {
         });
     }
 
-    private async showSession(session:Session): Promise<void> {
+    private async showSession(session:Session, parentElement?:HTMLDivElement): Promise<void> {
         this.currentSession = session;
-        for(let n of this.nightViews) {
-            n.destroyHtml();
-            this.nightViews = [];
+        
+        const oldNightViews = this.nightViews;
+        this.nightViews = [];
+        if(!parentElement) {
+            parentElement = this.currentSessionEl;
+            for(let n of this.nightViews) {
+                n.destroyHtml();
+            }
         }
-        Utilities.emptyDiv(document.getElementById('current-session') as HTMLDivElement);
+        Utilities.emptyDiv(parentElement);
         document.getElementById('no-sessions').classList.add('hidden');
         this.updateBreadcrumb();
         const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
@@ -158,11 +179,34 @@ export class SessionView {
             const nightView = new NightView({
                 night,
                 session,
-                sessionParentElement: document.getElementById('current-session') as HTMLDivElement
+                sessionParentElement: parentElement
             });
             nightView.buildHtml();
             this.nightViews.push(nightView);
         }
+
+        if(parentElement != this.currentSessionEl) {
+            //need to transition
+            if(parentElement.classList.contains('content-slide-left')) {
+                parentElement.classList.remove('content-slide-left');
+                parentElement.classList.add('content-slide-center');
+                this.currentSessionEl.classList.remove('content-slide-center');
+                this.currentSessionEl.classList.add('content-slide-right');
+            }
+            else {
+                parentElement.classList.remove('content-slide-right');
+                parentElement.classList.add('content-slide-center');
+                this.currentSessionEl.classList.remove('content-slide-center');
+                this.currentSessionEl.classList.add('content-slide-left');
+            }
+            const oldCurrentSessionEl = this.currentSessionEl;
+            this.currentSessionEl = parentElement;
+            setTimeout(()=> {
+                oldCurrentSessionEl.remove();
+            }, SessionView.SLIDER_SPEED * 1000);
+            
+        }
+        
     }
 
     /**

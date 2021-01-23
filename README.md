@@ -1,6 +1,7 @@
 # leaguescheduler
 TODO
 Create new session, browse between sessions
+in breadcrumb, allow changing of dates
 
 UX
 Auto login/navigate to current session based on date. Header has previous/next session arrows, plus an "all sessions" that takes to grid view

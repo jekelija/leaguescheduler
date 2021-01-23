@@ -44,6 +44,29 @@ img {
     }
 }
 
+#content-sliding-area {
+    width: 100%;
+    overflow-x: hidden;
+    .content-slider {
+        transition: var(--slider-animation-speed);
+        position: absolute;
+        width: 100%;
+    }
+    
+    .content-slide-left {
+        left: -100%;
+    }
+    .content-slide-center {
+        left: 0%;
+        position: relative;
+    }
+    .content-slide-right {
+        left: 100%;
+    }
+}
+
+
+
 @keyframes fadeIn {
     0% {
       opacity: 0;

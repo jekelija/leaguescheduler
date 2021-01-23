@@ -9,6 +9,7 @@ import { Utilities } from '../utilities/Utilities';
 
 import SETTINGS_ICON from '../../assets/settings.svg';
 import TRASH_ICON from '../../assets/trash.svg';
+import { LeagueView } from './LeagueView';
 
 export interface NightViewOptions {
     night:Night;
@@ -124,6 +125,7 @@ export class NightView {
         button.innerHTML = I18NManager.Instance().translate('global', 'creating');
         try {
             const l = (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name, 'POST')).response as League;
+            this.options.night.leagues.push(l);
             this.addLeague(l, undefined, true);
         } catch(e) {
             log.error(e);
@@ -134,7 +136,15 @@ export class NightView {
     }
 
     private async editLeague(div:HTMLDivElement): Promise<void> {
-        //TODO
+        const league = this.options.night.leagues.find(x=>x._id == div.dataset.id);
+        if(league) {
+            const newLeagueView = new LeagueView({
+                league
+            });
+        }
+        else {
+            log.error('Cannot find league with id ' + div.dataset.id);
+        }
     }
 
     private async deleteLeague(div:HTMLDivElement): Promise<void> {

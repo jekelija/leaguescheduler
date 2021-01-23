@@ -1,18 +1,23 @@
-import '../scss/league.scss';
+import '../../scss/league.scss';
 import { League } from '../model/League';
+
+export interface LeagueViewOptions {
+    league:League;
+}
+
 export class LeagueView {
 
     private root:HTMLDivElement;
-    private currentLeague:League;
 
-    constructor() {
-        this.root = document.getElementById('current-league') as HTMLDivElement;
+    constructor(private options:LeagueViewOptions) {
+        this.root = document.createElement('div');
+        this.root.classList.add('league-view', 'content-slider', 'content-slide-right');
+        document.getElementById('content-sliding-area').appendChild(this.root);
+        this.root.offsetHeight; //force a repaint
     }
 
     private async showLeague(league:League): Promise<void> {
-        this.currentLeague = league;
-        
-        this.root.classList.remove('right');
-        this.root.classList.remove('left');
+        this.root.classList.remove('content-slide-right');
+        this.root.classList.add('content-slide-center');
     }
 }
