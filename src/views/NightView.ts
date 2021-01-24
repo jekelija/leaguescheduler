@@ -2,7 +2,6 @@ import '../../scss/night.scss';
 import * as log from 'loglevel';
 import { I18NManager } from '../utilities/I18NManager';
 import { Night } from "../model/Night";
-import { Session } from '../model/Session';
 import { League } from '../model/League';
 import { ServiceUtils } from '../utilities/ServiceUtils';
 import { Utilities } from '../utilities/Utilities';
@@ -10,11 +9,11 @@ import { Utilities } from '../utilities/Utilities';
 import SETTINGS_ICON from '../../assets/settings.svg';
 import TRASH_ICON from '../../assets/trash.svg';
 import { LeagueView } from './LeagueView';
+import { INightViewDelegate } from '../interfaces/INightViewDelegate';
 
 export interface NightViewOptions {
     night:Night;
-    session:Session;
-    sessionParentElement:HTMLDivElement;
+    delegate:INightViewDelegate;
 }
 
 export class NightView {
@@ -23,8 +22,8 @@ export class NightView {
         if(!options.night) {
             throw 'NightView: must pass in a night';
         }
-        if(!options.sessionParentElement) {
-            throw 'NightView: must pass in a sessionParentElement';
+        if(!options.delegate) {
+            throw 'NightView: must pass in a delegate';
         }
     }
 
@@ -70,7 +69,7 @@ export class NightView {
         border.appendChild(addLeague);
 
         this.root.appendChild(border);
-        this.options.sessionParentElement.appendChild(this.root);
+        this.options.delegate.addChild(this.root);
     }
 
     private async updateLeagueName(input:HTMLInputElement): Promise<void> {
@@ -78,7 +77,7 @@ export class NightView {
         const league = this.options.night.leagues.find(x=>x._id==inputParent.dataset.id);
         if(league) {
             await Utilities.inputAutoUpdate(input, league.name, async name=> {
-                await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + league._id, 'POST', {name});
+                await ServiceUtils.request('api/sessions/' + this.options.delegate.getSession()._id + '/' + this.options.night.name + '/' + league._id, 'POST', {name});
             });
         }
         
@@ -124,7 +123,7 @@ export class NightView {
         const oldHtml = button.innerHTML;
         button.innerHTML = I18NManager.Instance().translate('global', 'creating');
         try {
-            const l = (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name, 'POST')).response as League;
+            const l = (await ServiceUtils.request('api/sessions/' + this.options.delegate.getSession()._id + '/' + this.options.night.name, 'POST')).response as League;
             this.options.night.leagues.push(l);
             this.addLeague(l, undefined, true);
         } catch(e) {
@@ -141,6 +140,8 @@ export class NightView {
             const newLeagueView = new LeagueView({
                 league
             });
+            this.options.delegate.slideLeft();
+            this.options.delegate.addToBreadcrumbTrail(I18NManager.Instance().translate('night', this.options.night.name) + ': ' + league.name);
         }
         else {
             log.error('Cannot find league with id ' + div.dataset.id);
@@ -151,7 +152,7 @@ export class NightView {
         //TODO disable the night?
         try {
             const leagueId = div.dataset.id;
-            (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + leagueId, 'DELETE')).response;
+            (await ServiceUtils.request('api/sessions/' + this.options.delegate.getSession()._id + '/' + this.options.night.name + '/' + leagueId, 'DELETE')).response;
             div.remove();
         } catch(e) {
             log.error(e);

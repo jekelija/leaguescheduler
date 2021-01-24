@@ -6,8 +6,9 @@ import { Session } from "../model/Session";
 import { I18NManager } from "../utilities/I18NManager";
 import { NightView } from './NightView';
 import { Utilities } from '../utilities/Utilities';
+import { INightViewDelegate } from '../interfaces/INightViewDelegate';
 
-export class SessionView {
+export class SessionView implements INightViewDelegate {
 
     nightViews:NightView[] = [];
     currentSessionEl: HTMLDivElement;
@@ -56,6 +57,36 @@ export class SessionView {
         });
     }
 
+    addToBreadcrumbTrail(breadcrumb:string): void {
+        const breadcrumbs = document.getElementById('session-breadcrumbs') as HTMLDivElement;
+        const breadcrumbEl = document.createElement('span');
+        breadcrumbEl.classList.add('breadcrumb');
+        breadcrumbEl.innerHTML = breadcrumb;
+        breadcrumbs.appendChild(breadcrumbEl);
+    }
+    popFromBreadcrumbTrail(): void {
+        const breadcrumbs = document.getElementById('session-breadcrumbs') as HTMLDivElement;
+        const breadcrumbEls = document.getElementsByClassName('breadcrumb');
+        if(breadcrumbEls.length > 1) {
+            breadcrumbEls[breadcrumbEls.length-1].remove();
+        }
+    }
+    getSession():Session {
+        return this.currentSession;
+    }
+    addChild(el:HTMLDivElement): void {
+        this.currentSessionEl.appendChild(el);
+    }
+
+    slideLeft():void {
+        this.currentSessionEl.classList.remove('content-slide-center');
+        this.currentSessionEl.classList.add('content-slide-left');
+    }
+    slideCenter():void {
+        this.currentSessionEl.classList.add('content-slide-center');
+        this.currentSessionEl.classList.remove('content-slide-left');
+    }
+
     private updateBreadcrumb(): void {
         const breadcrumbs = document.getElementById('session-breadcrumbs') as HTMLDivElement;
         if(this.currentSession) {
@@ -72,9 +103,7 @@ export class SessionView {
         }
         else {
             Utilities.emptyDiv(breadcrumbs);
-        }
-        
-        
+        }        
     }
 
     private async deleteSession(button:HTMLButtonElement): Promise<void> {
@@ -174,12 +203,13 @@ export class SessionView {
         this.updateBreadcrumb();
         const headerInput = document.getElementById('session-header').getElementsByClassName('session-header-text')[0] as HTMLInputElement;
         headerInput.value = session.name;
+        const oldCurrentSessionEl = this.currentSessionEl;
+        this.currentSessionEl = parentElement;
 
         for(let night of session.nights) {
             const nightView = new NightView({
                 night,
-                session,
-                sessionParentElement: parentElement
+                delegate: this
             });
             nightView.buildHtml();
             this.nightViews.push(nightView);
@@ -199,8 +229,6 @@ export class SessionView {
                 this.currentSessionEl.classList.remove('content-slide-center');
                 this.currentSessionEl.classList.add('content-slide-left');
             }
-            const oldCurrentSessionEl = this.currentSessionEl;
-            this.currentSessionEl = parentElement;
             setTimeout(()=> {
                 oldCurrentSessionEl.remove();
             }, SessionView.SLIDER_SPEED * 1000);
