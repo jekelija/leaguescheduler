@@ -1,29 +1,31 @@
-import '../../scss/night.scss';
+import '../../../scss/night.scss';
 import * as log from 'loglevel';
-import { I18NManager } from '../utilities/I18NManager';
-import { Night } from "../model/Night";
-import { League } from '../model/League';
-import { ServiceUtils } from '../utilities/ServiceUtils';
-import { Utilities } from '../utilities/Utilities';
+import { I18NManager } from '../../utilities/I18NManager';
+import { Night } from "../../model/Night";
+import { League } from '../../model/League';
+import { ServiceUtils } from '../../utilities/ServiceUtils';
+import { Utilities } from '../../utilities/Utilities';
 
-import SETTINGS_ICON from '../../assets/settings.svg';
-import TRASH_ICON from '../../assets/trash.svg';
-import { LeagueView } from './LeagueView';
-import { INightViewDelegate } from '../interfaces/INightViewDelegate';
+import SETTINGS_ICON from '../../../assets/settings.svg';
+import TRASH_ICON from '../../../assets/trash.svg';
+import { LeagueView } from '../LeagueView';
+import { Session } from '../../model/Session';
+import { SlideViewManager } from '../SlideViewManager';
 
-export interface NightViewOptions {
+export interface NightComponentOptions {
     night:Night;
-    delegate:INightViewDelegate;
+    session:Session;
+    slideViewManager:SlideViewManager;
 }
 
-export class NightView {
+export class NightComponent {
     private root:HTMLDivElement;
-    constructor(private options: NightViewOptions) {
+    constructor(private options: NightComponentOptions) {
         if(!options.night) {
-            throw 'NightView: must pass in a night';
+            throw 'NightComponent: must pass in a night';
         }
-        if(!options.delegate) {
-            throw 'NightView: must pass in a delegate';
+        if(!options.session) {
+            throw 'NightComponent: must pass in a session';
         }
     }
 
@@ -43,7 +45,9 @@ export class NightView {
                 this.editLeague(target.parentElement as HTMLDivElement);
             }
             else if(target.dataset.action == 'delete') {
-                this.deleteLeague(target.parentElement as HTMLDivElement);
+                if (window.confirm(I18NManager.Instance().translate('league', 'deleteAreYouSure'))) {
+                    this.deleteLeague(target.parentElement as HTMLDivElement);
+                }
             }
             else if(target.dataset.action == 'create') {
                 this.createLeague(e.target as HTMLButtonElement);
@@ -69,7 +73,7 @@ export class NightView {
         border.appendChild(addLeague);
 
         this.root.appendChild(border);
-        this.options.delegate.addChild(this.root);
+        return this.root;
     }
 
     private async updateLeagueName(input:HTMLInputElement): Promise<void> {
@@ -77,7 +81,7 @@ export class NightView {
         const league = this.options.night.leagues.find(x=>x._id==inputParent.dataset.id);
         if(league) {
             await Utilities.inputAutoUpdate(input, league.name, async name=> {
-                await ServiceUtils.request('api/sessions/' + this.options.delegate.getSession()._id + '/' + this.options.night.name + '/' + league._id, 'POST', {name});
+                await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + league._id, 'POST', {name});
             });
         }
         
@@ -123,7 +127,7 @@ export class NightView {
         const oldHtml = button.innerHTML;
         button.innerHTML = I18NManager.Instance().translate('global', 'creating');
         try {
-            const l = (await ServiceUtils.request('api/sessions/' + this.options.delegate.getSession()._id + '/' + this.options.night.name, 'POST')).response as League;
+            const l = (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name, 'POST')).response as League;
             this.options.night.leagues.push(l);
             this.addLeague(l, undefined, true);
         } catch(e) {
@@ -138,10 +142,11 @@ export class NightView {
         const league = this.options.night.leagues.find(x=>x._id == div.dataset.id);
         if(league) {
             const newLeagueView = new LeagueView({
-                league
+                league,
+                slideViewManager: this.options.slideViewManager,
+                root: document.createElement('div')
             });
-            this.options.delegate.slideLeft();
-            this.options.delegate.addToBreadcrumbTrail(I18NManager.Instance().translate('night', this.options.night.name) + ': ' + league.name);
+            this.options.slideViewManager.addToStack(newLeagueView);
         }
         else {
             log.error('Cannot find league with id ' + div.dataset.id);
@@ -152,7 +157,7 @@ export class NightView {
         //TODO disable the night?
         try {
             const leagueId = div.dataset.id;
-            (await ServiceUtils.request('api/sessions/' + this.options.delegate.getSession()._id + '/' + this.options.night.name + '/' + leagueId, 'DELETE')).response;
+            (await ServiceUtils.request('api/sessions/' + this.options.session._id + '/' + this.options.night.name + '/' + leagueId, 'DELETE')).response;
             div.remove();
         } catch(e) {
             log.error(e);

@@ -1,20 +1,26 @@
 import '../../scss/league.scss';
 import { League } from '../model/League';
+import { AbstractSlideView, AbstractSlideViewOptions } from './AbstractSlideView';
 
-export interface LeagueViewOptions {
+export interface LeagueViewOptions extends AbstractSlideViewOptions {
     league:League;
 }
 
-export class LeagueView {
+export class LeagueView extends AbstractSlideView {
+    getBreadcrumb(): HTMLElement {
+        const leagueBreadcrumb = document.createElement('span');
+        leagueBreadcrumb.classList.add('session-breadcrumb');
+        leagueBreadcrumb.innerHTML = this.getLeague().name;
 
-    private root:HTMLDivElement;
+        return leagueBreadcrumb;
+    }
 
-    constructor(private options:LeagueViewOptions) {
-        this.root = document.createElement('div');
-        this.root.classList.add('league-view', 'content-slider', 'content-slide-right');
-        document.getElementById('content-sliding-area').appendChild(this.root);
-        this.root.offsetHeight; //force a repaint
-        this.root.classList.remove('content-slide-right');
-        this.root.classList.add('content-slide-center');
+    getLeague():League {
+        return (this.options as LeagueViewOptions).league;
+    }
+
+    constructor(options:LeagueViewOptions) {
+        super(options);
+        this.options.root.classList.add('league-view');
     }
 }

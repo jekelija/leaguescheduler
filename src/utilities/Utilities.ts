@@ -2,6 +2,18 @@ import * as log from 'loglevel';
 import { I18NManager } from './I18NManager';
 
 export class Utilities {
+    public static SLIDER_SPEED = .7;
+
+    /**
+     * Promisifies a timeout
+     * @param {number} ms - milliseconds to wait
+     */
+    static async wait(ms: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, ms);
+        });
+    }
+
     static emptyDiv(div:HTMLDivElement):void {
         if(div) {
             while (div.firstChild) {
