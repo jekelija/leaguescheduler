@@ -54,7 +54,7 @@ export class SessionView extends AbstractSlideView {
     private showSession(session:Session): void {        
         for(let night of session.nights) {
             const nightComponent = new NightComponent({
-                session,
+                restApiPrefix: session._id + '/',
                 night,
                 slideViewManager: this.options.slideViewManager
             });

@@ -1,30 +1,19 @@
-import '../../../scss/night.scss';
-import * as log from 'loglevel';
-import { I18NManager } from '../../utilities/I18NManager';
-import { Night } from "../../model/Night";
-import { League } from '../../model/League';
-import { ServiceUtils } from '../../utilities/ServiceUtils';
-import { Utilities } from '../../utilities/Utilities';
+import { I18NManager } from "src/utilities/I18NManager";
+import { Team } from "../../model/Team";
 
-import SETTINGS_ICON from '../../../assets/settings.svg';
-import TRASH_ICON from '../../../assets/trash.svg';
-import { LeagueView } from '../LeagueView';
-import { SlideViewManager } from '../SlideViewManager';
-
-export interface NightComponentOptions {
-    night:Night;
+export interface TeamComponentOptions {
+    team:Team;
     restApiPrefix:string;
-    slideViewManager:SlideViewManager;
 }
 
-export class NightComponent {
+export class TeamComponent {
     private root:HTMLDivElement;
-    constructor(private options: NightComponentOptions) {
-        if(!options.night) {
-            throw 'NightComponent: must pass in a night';
+    constructor(private options: TeamComponentOptions) {
+        if(!options.team) {
+            throw 'TeamComponent: must pass in a team';
         }
         if(!options.restApiPrefix) {
-            throw 'NightComponent: must pass in a restApiPrefix';
+            throw 'TeamComponent: must pass in a restApiPrefix';
         }
     }
 
@@ -36,40 +25,37 @@ export class NightComponent {
         border.classList.add('session-night-border');
         this.root.addEventListener('change', e=> {
             const input = e.target as HTMLInputElement;
-            this.updateLeagueName(input);
+            this.updateTeamName(input);
         });
         this.root.addEventListener('click', e=> {
             const target = e.target as HTMLElement;
             if(target.dataset.action == 'edit') {
-                this.editLeague(target.parentElement as HTMLDivElement);
+                //TODO
             }
             else if(target.dataset.action == 'delete') {
-                if (window.confirm(I18NManager.Instance().translate('league', 'deleteAreYouSure'))) {
-                    this.deleteLeague(target.parentElement as HTMLDivElement);
+                if (window.confirm(I18NManager.Instance().translate('team', 'deleteAreYouSure'))) {
+                    this.deleteTeam(target.parentElement as HTMLDivElement);
                 }
-            }
-            else if(target.dataset.action == 'create') {
-                this.createLeague(e.target as HTMLButtonElement);
             }
         });
 
         const rootTitle = document.createElement('h3');
-        rootTitle.innerHTML = I18NManager.Instance().translate('night', this.options.night.name);
+        rootTitle.innerHTML = this.options.team.name;
         border.appendChild(rootTitle);
 
-        const nightLeagues = document.createElement('div');
-        nightLeagues.classList.add('leagues');
-        border.appendChild(nightLeagues);
+        const teamPlayers = document.createElement('div');
+        teamPlayers.classList.add('teams');
+        border.appendChild(teamPlayers);
 
-        for(let l of this.options.night.leagues) {
-            this.addLeague(l, nightLeagues);
+        for(let p of this.options.team.players) {
+            this.addPlayer(p, teamPlayers);
         }
 
-        const addLeague = document.createElement('button');
-        addLeague.classList.add('btn');
-        addLeague.dataset.action = 'create';
-        addLeague.innerHTML = I18NManager.Instance().translate('night', 'addLeague');
-        border.appendChild(addLeague);
+        const addPlayer = document.createElement('button');
+        addPlayer.classList.add('btn');
+        addPlayer.dataset.action = 'create';
+        addPlayer.innerHTML = I18NManager.Instance().translate('team', 'addPlayer');
+        border.appendChild(addPlayer);
 
         this.root.appendChild(border);
         return this.root;
