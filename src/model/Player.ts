@@ -5,4 +5,5 @@ export interface Player {
     phone:string;
     email:string;
     restrictions:Restriction[];
+    readonly _id:string;
 }

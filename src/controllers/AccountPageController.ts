@@ -83,6 +83,7 @@ export class AccountPageController {
     private showSession(session:Session, slideOldStuffLeft: boolean): void {
         document.getElementById('no-sessions').classList.add('hidden');
         const newView = new SessionView({
+            restApiPrefix: 'api/sessions/',
             slideViewManager:this.viewManager, 
             root: document.createElement('div'),
             session

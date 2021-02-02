@@ -11,11 +11,6 @@ export interface SessionViewOptions extends AbstractSlideViewOptions {
     session:Session
 }
 export class SessionView extends AbstractSlideView {
-
-    nightComponents:NightComponent[] = [];
-
-    private static SLIDER_SPEED = .7;
-
     constructor(options:SessionViewOptions) {
         super(options);
         this.options.root.classList.add('session-view');
@@ -47,20 +42,20 @@ export class SessionView extends AbstractSlideView {
 
     private async updateSessionName(input:HTMLInputElement): Promise<void> {
         await Utilities.inputAutoUpdate(input, this.getSession().name, async name=> {
-            await ServiceUtils.request('api/sessions/' + this.getSession()._id, 'POST', {name});
+            await ServiceUtils.request(this.options.restApiPrefix + this.getSession()._id, 'PUT', {name});
         });
     }
 
     private showSession(session:Session): void {        
         for(let night of session.nights) {
-            const nightComponent = new NightComponent({
+            const nightRoot = document.createElement('div');
+            new NightComponent({
                 restApiPrefix: session._id + '/',
                 night,
+                root: nightRoot,
                 slideViewManager: this.options.slideViewManager
             });
-            const nightRoot = nightComponent.buildHtml();
             this.options.root.appendChild(nightRoot);
-            this.nightComponents.push(nightComponent);
         }
     }
 }

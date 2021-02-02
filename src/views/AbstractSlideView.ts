@@ -3,7 +3,8 @@ import { SlideViewManager } from "./SlideViewManager";
 
 export interface AbstractSlideViewOptions {
     slideViewManager:SlideViewManager,
-    root:HTMLDivElement
+    root:HTMLDivElement,
+    restApiPrefix:string
 }
 
 export abstract class AbstractSlideView {

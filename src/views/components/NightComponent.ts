@@ -9,16 +9,13 @@ import { Utilities } from '../../utilities/Utilities';
 import SETTINGS_ICON from '../../../assets/settings.svg';
 import TRASH_ICON from '../../../assets/trash.svg';
 import { LeagueView } from '../LeagueView';
-import { SlideViewManager } from '../SlideViewManager';
+import { AbstractSlideViewOptions } from '../AbstractSlideView';
 
-export interface NightComponentOptions {
+export interface NightComponentOptions extends AbstractSlideViewOptions {
     night:Night;
-    restApiPrefix:string;
-    slideViewManager:SlideViewManager;
 }
 
 export class NightComponent {
-    private root:HTMLDivElement;
     constructor(private options: NightComponentOptions) {
         if(!options.night) {
             throw 'NightComponent: must pass in a night';
@@ -26,19 +23,25 @@ export class NightComponent {
         if(!options.restApiPrefix) {
             throw 'NightComponent: must pass in a restApiPrefix';
         }
+        if(!options.root) {
+            throw 'NightComponent: must pass in a root';
+        }
+        if(!options.slideViewManager) {
+            throw 'NightComponent: must pass in a slideViewManager';
+        }
+        this.buildHtml();
     }
 
-    buildHtml() {
-        this.root = document.createElement('div');
-        this.root.classList.add('session-night');
+    private buildHtml():void {
+        this.options.root.classList.add('component');
 
         const border = document.createElement('div');
-        border.classList.add('session-night-border');
-        this.root.addEventListener('change', e=> {
+        border.classList.add('component-border');
+        this.options.root.addEventListener('change', e=> {
             const input = e.target as HTMLInputElement;
             this.updateLeagueName(input);
         });
-        this.root.addEventListener('click', e=> {
+        this.options.root.addEventListener('click', e=> {
             const target = e.target as HTMLElement;
             if(target.dataset.action == 'edit') {
                 this.editLeague(target.parentElement as HTMLDivElement);
@@ -71,8 +74,7 @@ export class NightComponent {
         addLeague.innerHTML = I18NManager.Instance().translate('night', 'addLeague');
         border.appendChild(addLeague);
 
-        this.root.appendChild(border);
-        return this.root;
+        this.options.root.appendChild(border);
     }
 
     private async updateLeagueName(input:HTMLInputElement): Promise<void> {
@@ -80,16 +82,16 @@ export class NightComponent {
         const league = this.options.night.leagues.find(x=>x._id==inputParent.dataset.id);
         if(league) {
             await Utilities.inputAutoUpdate(input, league.name, async name=> {
-                await ServiceUtils.request('api/sessions/' + this.options.restApiPrefix + this.options.night.name + '/' + league._id, 'POST', {name});
+                await ServiceUtils.request('api/sessions/' + this.options.restApiPrefix + this.options.night.name + '/' + league._id, 'PUT', {name});
             });
         }
         
     }
 
     private addLeague(l:League, leagueParentDiv?:HTMLDivElement, autoFocus?:boolean):void {
-        if(this.root) {
+        if(this.options.root) {
             if(!leagueParentDiv) {
-                leagueParentDiv = this.root.getElementsByClassName('leagues')[0] as HTMLDivElement;
+                leagueParentDiv = this.options.root.getElementsByClassName('leagues')[0] as HTMLDivElement;
             }
             const leagueDiv = document.createElement('div');
             leagueDiv.classList.add('league');
@@ -143,7 +145,8 @@ export class NightComponent {
             const newLeagueView = new LeagueView({
                 league,
                 slideViewManager: this.options.slideViewManager,
-                root: document.createElement('div')
+                root: document.createElement('div'),
+                restApiPrefix: this.options.restApiPrefix + this.options.night.name + '/'
             });
             this.options.slideViewManager.addToStack(newLeagueView);
         }
@@ -157,6 +160,10 @@ export class NightComponent {
         try {
             const leagueId = div.dataset.id;
             (await ServiceUtils.request('api/sessions/' + this.options.restApiPrefix + this.options.night.name + '/' + leagueId, 'DELETE')).response;
+            const leagueIndex = this.options.night.leagues.findIndex(x=>x._id == leagueId);
+            if(leagueIndex != -1) {
+                this.options.night.leagues.splice(leagueIndex, 1);
+            }
             div.remove();
         } catch(e) {
             log.error(e);

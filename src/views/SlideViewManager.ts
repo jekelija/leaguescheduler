@@ -76,7 +76,7 @@ export class SlideViewManager {
         document.getElementById('content-sliding-area').appendChild(view.options.root);
 
         this.slideViewStack.push(view);
-        view.slideLeft();
+        view.slideRight();
         view.options.root.offsetHeight; //force a repaint
         view.slideCenter();
         if(this.slideViewStack.length > 1) {

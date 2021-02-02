@@ -26,8 +26,11 @@ img {
     max-height: 100%;
 }
 
-.btn {
+button {
     cursor: pointer;
+}
+
+.btn {
     position: relative;
     height:40px;
     margin:0px;
@@ -153,5 +156,26 @@ img {
     }
     100% {
       transform: rotate(360deg);
+    }
+}
+
+.component {
+    width: 100%;
+
+    @include media-query(md) {
+        width: 50%;
+    }
+    @include media-query(lg) {
+        width: 33%;
+    }
+    @include media-query(xl) {
+        width: 20%;
+    }
+
+    .component-border {
+        border: 2px solid grey;
+        margin-right: 20px;
+        position: relative;
+        padding: 10px;
     }
 }
