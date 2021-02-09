@@ -81,8 +81,8 @@ export class NightComponent {
         const inputParent = input.parentElement;
         const league = this.options.night.leagues.find(x=>x._id==inputParent.dataset.id);
         if(league) {
-            await Utilities.inputAutoUpdate(input, league.name, async name=> {
-                await ServiceUtils.request('api/sessions/' + this.options.restApiPrefix + this.options.night.name + '/' + league._id, 'PUT', {name});
+            await Utilities.inputAutoUpdate(input, league, 'name', async name=> {
+                await ServiceUtils.request('api/sessions/' + this.options.restApiPrefix + this.options.night.name + '/' + league._id, 'PATCH', {name});
             });
         }
         
@@ -94,7 +94,7 @@ export class NightComponent {
                 leagueParentDiv = this.options.root.getElementsByClassName('leagues')[0] as HTMLDivElement;
             }
             const leagueDiv = document.createElement('div');
-            leagueDiv.classList.add('league');
+            leagueDiv.classList.add('editable-row');
             leagueDiv.dataset.id = l._id;
             const league = document.createElement('input');
             league.value = l.name;

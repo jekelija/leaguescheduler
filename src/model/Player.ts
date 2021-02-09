@@ -2,7 +2,7 @@ import { Restriction } from "./Restriction";
 
 export interface Player {
     name:string;
-    phone:string;
+    phoneNumber:string;
     email:string;
     restrictions:Restriction[];
     readonly _id:string;

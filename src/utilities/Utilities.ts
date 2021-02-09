@@ -98,7 +98,8 @@ export class Utilities {
         });  
     }
 
-    static async inputAutoUpdate(input:HTMLInputElement, currentValue:string, serviceUpdate:(newValue:string)=>Promise<void>):Promise<void> {
+    static async inputAutoUpdate(input:HTMLInputElement, obj:Object, key:string, serviceUpdate:(newValue:string)=>Promise<void>):Promise<void> {
+        const currentValue = obj[key];
         if(input.value != currentValue) {
             input.disabled = true;
             input.nextElementSibling.innerHTML = '';
@@ -106,6 +107,7 @@ export class Utilities {
                 input.nextElementSibling.innerHTML = I18NManager.Instance().translate('global', 'updating');
                 await serviceUpdate(input.value);
                 input.nextElementSibling.innerHTML = '';
+                obj[key] = input.value;
             }
             catch(e) {
                 input.nextElementSibling.innerHTML = I18NManager.Instance().translate('global', 'error');

@@ -28,6 +28,7 @@ export class SlideViewManager {
     }
 
     open(view:AbstractSlideView, slideOldStuffLeft:boolean): void {
+        document.getElementById('content-sliding-area').scrollTop = 0;
         document.getElementById('content-sliding-area').appendChild(view.options.root);
         //is there a current view? what direction should it slide?
         if(this.slideViewStack.length > 0) {
@@ -73,6 +74,7 @@ export class SlideViewManager {
     }
 
     addToStack(view:AbstractSlideView): void {
+        document.getElementById('content-sliding-area').scrollTop = 0;
         document.getElementById('content-sliding-area').appendChild(view.options.root);
 
         this.slideViewStack.push(view);

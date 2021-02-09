@@ -6,10 +6,10 @@ export class ServiceUtils {
         userToken = token;
     }
 
-    static request(endpoint:string, type:'POST'|'DELETE'|'GET'|'PUT' = 'GET', data?:any, headers?:Map<string, string>): Promise<{response:any, request:XMLHttpRequest}> {
+    static request(endpoint:string, type:'POST'|'DELETE'|'GET'|'PUT'|'PATCH' = 'GET', data?:any, headers?:Map<string, string>): Promise<{response:any, request:XMLHttpRequest}> {
         const request = new XMLHttpRequest();
         request.open(type, url + endpoint);
-        if(type == 'POST' || type == 'PUT') {
+        if(type == 'POST' || type == 'PUT' || type == 'PATCH') {
             request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
         }
         if(headers) {

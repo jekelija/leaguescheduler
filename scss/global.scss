@@ -13,6 +13,11 @@ body {
     margin: 0px;
     overflow: hidden;
     color: var(--font-color);
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    position: absolute;
+    width: 100%;
 }
 
 input {
@@ -46,29 +51,6 @@ button {
         justify-content: center;
     }
 }
-
-#content-sliding-area {
-    width: 100%;
-    overflow-x: hidden;
-    .content-slider {
-        transition: var(--slider-animation-speed);
-        position: absolute;
-        width: 100%;
-    }
-    
-    .content-slide-left {
-        left: -100%;
-    }
-    .content-slide-center {
-        left: 0%;
-        position: relative;
-    }
-    .content-slide-right {
-        left: 100%;
-    }
-}
-
-
 
 @keyframes fadeIn {
     0% {
@@ -159,6 +141,46 @@ button {
     }
 }
 
+#account {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-flow: column;
+
+    #account-content {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        overflow: auto;
+
+        #breadcrumbs {
+            flex: 0 0 30px;
+        }
+
+        #content-sliding-area {
+            width: 100%;
+            overflow-x: hidden;
+            flex: 1;
+            .content-slider {
+                transition: var(--slider-animation-speed);
+                position: absolute;
+                width: 100%;
+            }
+            
+            .content-slide-left {
+                left: -100%;
+            }
+            .content-slide-center {
+                left: 0%;
+                position: relative;
+            }
+            .content-slide-right {
+                left: 100%;
+            }
+        }
+    }
+}
+
 .component {
     width: 100%;
 
@@ -177,5 +199,14 @@ button {
         margin-right: 20px;
         position: relative;
         padding: 10px;
+
+        .editable-row {
+            display: flex;
+            align-items: center;
+            input {
+                border: none;
+                width:100%;
+            }
+        }
     }
 }

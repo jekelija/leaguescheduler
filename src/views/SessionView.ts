@@ -41,8 +41,9 @@ export class SessionView extends AbstractSlideView {
     }
 
     private async updateSessionName(input:HTMLInputElement): Promise<void> {
-        await Utilities.inputAutoUpdate(input, this.getSession().name, async name=> {
-            await ServiceUtils.request(this.options.restApiPrefix + this.getSession()._id, 'PUT', {name});
+        const session = this.getSession();
+        await Utilities.inputAutoUpdate(input, session, 'name', async name=> {
+            await ServiceUtils.request(this.options.restApiPrefix + this.getSession()._id, 'PATCH', {name});
         });
     }
 
